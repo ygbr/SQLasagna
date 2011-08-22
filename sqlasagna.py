@@ -6,7 +6,7 @@
 # In order to play on a interactive shell and make some queries with SQLasagna, execute: # python3 -i sqlasagna.py
 #
 
-__version__ = '1.0'
+__version__ = 'trunk/master'
 
 from sqlalchemy import *
 from sqlalchemy.orm import *
@@ -77,16 +77,20 @@ class DBD:
             return False
 
 
-
 Base.metadata.reflect()
 
 tables = Base.metadata.tables
 
 for i in tables:
     # Here we create all mapper object using declarative base and my Mixin. If you know a better, faster, optimal way of doing this, fell free to change it.
-    print("[SQLasagna] Mapping %s" % i)
+    print("[SQLasagna] Mapping Table %s:" % i)
     globals()[i] = type(i, (Base, DBD), {})
 
 
-
-
+for i in tables:
+    # Now we map all relationships
+    print("[SQLasagna] Mapping Relationships for %s:" % i)
+    for j in Base.metadata.tables.get(i).foreign_keys:
+        t = j.target_fullname.split('.')[0]
+        class_mapper(globals().get(i))._configure_property(t, relationship(globals().get(t)))
+    
