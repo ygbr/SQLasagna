@@ -26,6 +26,10 @@ Base.metadata.bind = engine
 Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
 se = Session()
 
+# Publish some session methods for module globals for quick calls
+commit = se.commit()
+rollback = se.rollback()
+
 class DBD:
     """This is my magic Mixin, it adds some magic methods to the objects, allowing something like SqlSoup"""
     
