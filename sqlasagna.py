@@ -62,6 +62,16 @@ class DBD:
     def first(cls):
         return se.query(cls).first()
     
+    @classmethod
+    def insert(cls, **kwargs):
+        try:
+            i = insert(cls.__table__).values(**kwargs)
+            x = se.execute(i)
+            return x.inserted_primary_key
+        except:
+            se.rollback()
+            return False
+    
     def save(self):
         try:
             se.add(self)
