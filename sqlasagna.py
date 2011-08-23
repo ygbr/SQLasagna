@@ -37,22 +37,30 @@ class DBD:
     
     def __repr__(self):
         return str(self.__dict__)
-        
+    
     @classmethod
     def all(cls):
         return se.query(cls).all()
     
     @classmethod
-    def find(cls, **kwargs):
+    def filter_by(cls, **kwargs):
         return se.query(cls).filter_by(**kwargs)
-        
+    
+    @classmethod
+    def filter(cls, *args):
+        return se.query(cls).filter(*args)
+    
     @classmethod
     def get(cls, id):
         return se.query(cls).get(id)
-        
+    
     @classmethod
     def query(cls):
         return se.query(cls)
+    
+    @classmethod
+    def first(cls):
+        return se.query(cls).first()
     
     def save(self):
         try:
@@ -62,7 +70,7 @@ class DBD:
         except:
             se.rollback()
             return False
-        
+    
     def delete(self):
         try:
             if self.id:
@@ -75,7 +83,7 @@ class DBD:
         except:
             se.rollback()
             return False
-
+    
 
 Base.metadata.reflect()
 
@@ -83,13 +91,12 @@ tables = Base.metadata.tables
 
 for i in tables:
     # Here we create all mapper object using declarative base and my Mixin. If you know a better, faster, optimal way of doing this, fell free to change it.
-    print("[SQLasagna] Mapping Table %s:" % i)
+    print("[SQLasagna] Mapping Table %s." % i)
     globals()[i] = type(i, (Base, DBD), {})
-
 
 for i in tables:
     # Now we map all relationships
-    print("[SQLasagna] Mapping Relationships for %s:" % i)
+    print("[SQLasagna] Mapping Relationships for %s." % i)
     for j in Base.metadata.tables.get(i).foreign_keys:
         t = j.target_fullname.split('.')[0]
         class_mapper(globals().get(i))._configure_property(t, relationship(globals().get(t)))
