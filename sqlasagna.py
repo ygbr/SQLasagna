@@ -27,8 +27,8 @@ Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
 se = Session()
 
 # Publish some session methods for module globals for quick calls
-commit = se.commit()
-rollback = se.rollback()
+commit = se.commit
+rollback = se.rollback
 
 class DBD:
     """This is my magic Mixin, it adds some magic methods to the objects, allowing something like SqlSoup"""
@@ -71,7 +71,7 @@ class DBD:
         try:
             i = insert(cls.__table__).values(**kwargs)
             x = se.execute(i)
-            return x.inserted_primary_key
+            return x
         except:
             se.rollback()
             return False
