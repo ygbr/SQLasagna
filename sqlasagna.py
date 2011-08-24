@@ -47,6 +47,10 @@ class DBD:
         return se.query(cls).all()
     
     @classmethod
+    def count(cls):
+        return se.query(cls).count()
+    
+    @classmethod
     def filter_by(cls, **kwargs):
         return se.query(cls).filter_by(**kwargs)
     
