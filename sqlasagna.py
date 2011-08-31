@@ -117,5 +117,5 @@ for i in tables:
     print("[SQLasagna] Mapping Relationships for %s." % i)
     for j in Base.metadata.tables.get(i).foreign_keys:
         t = j.target_fullname.split('.')[0]
-        class_mapper(globals().get(i))._configure_property(t, relationship(globals().get(t)))
+        class_mapper(globals().get(i))._configure_property(t, relationship(globals().get(t), backref=i))
     
