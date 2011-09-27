@@ -29,6 +29,7 @@ se = Session()
 # Publish some session methods for module globals for quick calls
 commit = se.commit
 rollback = se.rollback
+execute = se.execute
 
 class DBD:
     """This is my magic Mixin, it adds some magic methods to the objects, allowing something like SqlSoup"""
@@ -72,11 +73,13 @@ class DBD:
     
     @classmethod
     def insert(cls, **kwargs):
-        try:
-            i = insert(cls.__table__).values(**kwargs)
-            x = se.execute(i)
+         try:
+            x = cls(**kwargs)
+            se.add(x)
+            se.commit()
             return x
         except:
+            print("[SQLasagna] Insert Error: " + str(sys.exc_info()))
             se.rollback()
             return False
     
@@ -86,6 +89,7 @@ class DBD:
             se.commit()
             return True
         except:
+            print("[SQLasagna] ORM Save Error: " + str(sys.exc_info()))
             se.rollback()
             return False
     
@@ -99,6 +103,7 @@ class DBD:
                 
             return True
         except:
+            print("[SQLasagna] Delete Error: " + str(sys.exc_info()))
             se.rollback()
             return False
     
