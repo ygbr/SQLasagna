@@ -3,8 +3,6 @@
 #
 #   SQLasagna
 #
-# In order to play on a interactive shell and make some queries with SQLasagna, execute: # python3 -i sqlasagna.py
-#
 
 __version__ = '1.0'
 
@@ -13,7 +11,6 @@ from sqlalchemy.orm import *
 from sqlalchemy.sql.expression import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.declarative import declared_attr
-
 
 
 def connect(dsl, **kwargs):
@@ -28,7 +25,7 @@ def connect(dsl, **kwargs):
     se = Session()
     
     class x:
-        """This holds the return object"""
+        """This holds the returned object"""
         pass
     
     # Publish some session methods at module globals scope for quick calls
