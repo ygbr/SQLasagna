@@ -35,7 +35,7 @@ The focus is to keep it simple and fast.
 I've used SQLAlchemy's native declarative_base ORM extensions in order to build the SQLasagna extension. It consists in a mixin that enhances the native Base classe and instantiates along with Base on the ORM objects. Also a tiny bit of code that plugs on the Base metadata, scan the tables and relations and create the mapper objects dynamically.
 
 #### Using
-    
+
 
 ##### In order to use SQLasagna you must import it on your code, of course:
 
