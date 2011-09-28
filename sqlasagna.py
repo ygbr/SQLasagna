@@ -14,9 +14,11 @@ from sqlalchemy.sql.expression import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.declarative import declared_attr
 
+
+
 def connect(dsl, **kwargs):
     
-    # Connection configuration
+    # Connection and session configuration
     engine = create_engine(dsl, **kwargs)
     
     Base = declarative_base()
@@ -25,10 +27,14 @@ def connect(dsl, **kwargs):
     Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
     se = Session()
     
+    class x:
+        """This holds the return object"""
+        pass
+    
     # Publish some session methods at module globals scope for quick calls
-    globals()['commit'] = se.commit
-    globals()['rollback'] = se.rollback
-    globals()['execute'] = se.execute
+    x.commit = se.commit
+    x.rollback = se.rollback
+    x.execute = se.execute
     
     class DBD:
         """This is the magic Mixin, it adds some magic methods to the objects, allowing something like SqlSoup"""
@@ -112,14 +118,16 @@ def connect(dsl, **kwargs):
     tables = Base.metadata.tables
     
     for i in tables:
-        # Here we create all mapper object using declarative base and my Mixin. If you know a better, faster, optimal way of doing this, fell free to change it.
+        # Here we create all mapper objects using declarative base and my Mixin
         print("[SQLasagna] Mapping Table %s." % i)
-        globals()[i] = type(i, (Base, DBD), {})
+        setattr(x, i, type(i, (Base, DBD), {}))
         
     for i in tables:
         # Now we map all relationships
         print("[SQLasagna] Mapping Relationships for %s." % i)
         for j in Base.metadata.tables.get(i).foreign_keys:
             t = j.target_fullname.split('.')[0]
-            class_mapper(globals().get(i))._configure_property(t, relationship(globals().get(t), backref=i))
+            class_mapper(getattr(x,i))._configure_property(t, relationship(getattr(x, t), backref=i))
     
+    
+    return x
