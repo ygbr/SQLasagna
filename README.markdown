@@ -4,7 +4,7 @@
 SQLasagna is a project built on top of SQLAlchemy 0.7.2 aiming to provide automatic table and relationship reflections along with object mapping and some Magic Mixins allowing you to do pretty much everything you can do with SQLSoup today but using an emphasized ORM Dialect approach.
 It uses SQLAlchemy declarative base, class mapper and reflections to map your whole database into nice objects.
 
-I started this project since SQLSoup will probably be discontinued. I don't use a single line of SQLSoup, so when it was removed SQLasagna will continue to work.
+I started this project since SQLSoup WILL BE DISCONTINUED on the next SQLAlchemy release (0.8). I don't use a single line of SQLSoup, so when it was removed SQLasagna will continue to work.
 
 Also SQLSoup has approximately 400 lines of code ( 800 if you count comments ). SQLasagna has about 150 ( 200 w\ comments ) and can map relationships automatically, which SQLSoup can't at this time. Simplicity is cool.
 
@@ -26,7 +26,7 @@ After that you just need to setup SQLasagna. For now you can copy it to your sit
 
 #### Versions
 
-I have used **SQLAlchemy 0.7.2** and **Python 3.2** so, by now, I'll only support environments running on those versions. Also, I'm focused on get it working for MySQL, PostgreSQL and SQLite first, but I believe that this will kick-off pretty much anything that SQLAlchemy already supports.
+I have used **SQLAlchemy 0.7.5** and **Python 3.2** so, by now, I'll only support environments running on those versions. Also, I'm focused on get it working for MySQL, PostgreSQL and SQLite first, but I believe that this will kick-off pretty much anything that SQLAlchemy already supports.
 
 #### Architecture
 
