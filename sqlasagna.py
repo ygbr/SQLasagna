@@ -3,9 +3,13 @@
 #
 #   SQLasagna
 #
+#   @author     Ygor Lemos < ygbr@mac.com >
+#               github.com/ygbr/SQLasagna
+#
 
 __version__ = '1.0'
 
+import sys
 from sqlalchemy import *
 from sqlalchemy.orm import *
 from sqlalchemy.sql.expression import *
@@ -24,16 +28,17 @@ def connect(dsl, **kwargs):
     Session = scoped_session(sessionmaker(bind=engine, autoflush=True))
     se = Session()
     
-    class x:
-        """This holds the returned object"""
+    class Bolognesa:
+        """This bogus object holds the returned object"""
         pass
     
     # Publish some session methods at module globals scope for quick calls
-    x.commit = se.commit
-    x.rollback = se.rollback
-    x.execute = se.execute
+    Bolognesa.commit = se.commit
+    Bolognesa.rollback = se.rollback
+    Bolognesa.execute = se.execute
     
-    class DBD:
+    
+    class Pasta:
         """This is the magic Mixin, it adds some magic methods to the objects, allowing something like SqlSoup"""
         
         __table_args__ = {'autoload': True}
@@ -50,8 +55,16 @@ def connect(dsl, **kwargs):
             return se.query(cls).all()
         
         @classmethod
+        def add_column(cls, *args, **kwargs):
+            return se.query(cls).add_column(*args, **kwargs)
+        
+        @classmethod
         def count(cls):
             return se.query(cls).count()
+        
+        @classmethod
+        def order_by(cls, *args, **kwargs):
+            return se.query(cls).order_by(*args, **kwargs)
         
         @classmethod
         def filter_by(cls, **kwargs):
@@ -76,10 +89,10 @@ def connect(dsl, **kwargs):
         @classmethod
         def insert(cls, **kwargs):
             try:
-                x = cls(**kwargs)
-                se.add(x)
+                instemp = cls(**kwargs)
+                se.add(instemp)
                 se.commit()
-                return x
+                return instemp
             except:
                 print("[SQLasagna] Insert Error: " + str(sys.exc_info()))
                 se.rollback()
@@ -114,17 +127,24 @@ def connect(dsl, **kwargs):
     
     tables = Base.metadata.tables
     
-    for i in tables:
+    for table in tables:
         # Here we create all mapper objects using declarative base and my Mixin
-        print("[SQLasagna] Mapping Table %s." % i)
-        setattr(x, i, type(i, (Base, DBD), {}))
+        print("[SQLasagna] Mapping Table %s." % table)
+        setattr(Bolognesa, table, type(table, (Base, Pasta), {}))
         
-    for i in tables:
+    for table in tables:
         # Now we map all relationships
-        print("[SQLasagna] Mapping Relationships for %s." % i)
-        for j in Base.metadata.tables.get(i).foreign_keys:
-            t = j.target_fullname.split('.')[0]
-            class_mapper(getattr(x,i))._configure_property(t, relationship(getattr(x, t), backref=i))
+        print("[SQLasagna] Mapping Relationships for %s." % table)
+        
+        for fk in Base.metadata.tables.get(table).foreign_keys:
+            fkn = fk.target_fullname.split('.')[0]
+            if fkn != table:
+                try:
+                    class_mapper(getattr(Bolognesa,table))._configure_property(fkn, relationship(getattr(Bolognesa, fkn), backref=table))
+                except:
+                    print("[SQLasagna] Problem mapping relationships for %s." % table)
+                    print(sys.exc_info())
+            else:
+                print("[SQLasagna] Not mapping relationship %s into table %s because it is already mapped." %(fkn, table))
     
-    
-    return x
+    return Bolognesa
