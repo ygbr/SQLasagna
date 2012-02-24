@@ -37,7 +37,6 @@ def connect(dsl, **kwargs):
     Bolognesa.rollback = se.rollback
     Bolognesa.execute = se.execute
     
-    
     class Pasta:
         """This is the magic Mixin, it adds some magic methods to the objects, allowing something like SqlSoup"""
         
@@ -131,7 +130,7 @@ def connect(dsl, **kwargs):
         # Here we create all mapper objects using declarative base and my Mixin
         print("[SQLasagna] Mapping Table %s." % table)
         setattr(Bolognesa, table, type(table, (Base, Pasta), {}))
-        
+    
     for table in tables:
         # Now we map all relationships
         print("[SQLasagna] Mapping Relationships for %s." % table)
@@ -144,6 +143,8 @@ def connect(dsl, **kwargs):
                 except:
                     print("[SQLasagna] Problem mapping relationships for %s." % table)
                     print(sys.exc_info())
+                    print("[SQLasagna] Re-Mapping Table %s." % table)
+                    setattr(Bolognesa, table, type(table, (Base, Pasta), {}))
             else:
                 print("[SQLasagna] Not mapping relationship %s into table %s because it is already mapped." %(fkn, table))
     
