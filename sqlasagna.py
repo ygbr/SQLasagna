@@ -129,7 +129,7 @@ def connect(dsl, **kwargs):
     for table in tables:
         # Here we create all mapper objects using declarative base and my Mixin
         print("[SQLasagna] Mapping Table %s." % table)
-        setattr(Bolognesa, table, type(table, (Base, Pasta), {}))
+        setattr(Bolognesa, table, type(str(table), (Base, Pasta), {}))
     
     for table in tables:
         # Now we map all relationships
